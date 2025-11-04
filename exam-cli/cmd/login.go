@@ -55,7 +55,7 @@ var loginCmd = &cobra.Command{
 		}
 
 		// 获取容器ID
-		containerId := os.Getenv("HOSTNAME")
+		containerId := config["container_id"]
 		if containerId == "" {
 			_, _ = fmt.Fprintln(os.Stderr, "无法获取容器ID")
 			os.Exit(1)
@@ -90,7 +90,7 @@ var loginCmd = &cobra.Command{
 
 			resp, err := client.R().
 				SetQueryParamsFromValues(params).
-				Get(serverURL + "/api/user/register")
+				Post(serverURL + "/api/user/register")
 
 			if err != nil {
 				fmt.Printf("注册失败: %v\n", err)
