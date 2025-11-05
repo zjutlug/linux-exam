@@ -32,12 +32,11 @@ var infoCmd = &cobra.Command{
 	Short: "获取用户信息",
 	Run: func(cmd *cobra.Command, args []string) {
 		var response Response
-		config := readConfig()
 		client := resty.New()
 		_, err := client.R().
-			SetQueryParam("container_id", config["container_id"]).
+			SetQueryParam("container_id", conf.ContainerId).
 			SetResult(&response).
-			Post(config["api_base_url"] + "/api/user/info")
+			Post(conf.APIBaseURL + "/api/user/info")
 
 		if err != nil {
 			fmt.Println("Error sending request:", err)

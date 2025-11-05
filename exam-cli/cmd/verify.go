@@ -25,8 +25,7 @@ var verifyCmd = &cobra.Command{
 		}
 		answer := args[1]
 
-		config := readConfig()
-		apiURL := config["api_base_url"] + "/api/user/verify"
+		url := conf.APIBaseURL + "/api/user/verify"
 
 		client := resty.New()
 		var resp response
@@ -37,7 +36,7 @@ var verifyCmd = &cobra.Command{
 				"answer":       answer,
 			}).
 			SetResult(&resp).
-			Post(apiURL)
+			Post(url)
 
 		if err != nil {
 			fmt.Println("请求出错:", err)

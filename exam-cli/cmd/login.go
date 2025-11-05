@@ -41,26 +41,6 @@ var loginCmd = &cobra.Command{
 				return
 			}
 		}
-
-		// 读取配置
-		config := readConfig()
-		if config == nil {
-			_, _ = fmt.Fprintln(os.Stderr, "无法读取配置文件")
-			os.Exit(1)
-		}
-		serverURL := config["api_base_url"]
-		if serverURL == "" {
-			_, _ = fmt.Fprintln(os.Stderr, "配置文件中缺少服务器地址")
-			os.Exit(1)
-		}
-
-		// 获取容器ID
-		containerId := config["container_id"]
-		if containerId == "" {
-			_, _ = fmt.Fprintln(os.Stderr, "无法获取容器ID")
-			os.Exit(1)
-		}
-
 		reader := bufio.NewReader(os.Stdin)
 		re := regexp.MustCompile(`^[A-Za-z0-9_-]+$`)
 
@@ -86,11 +66,11 @@ var loginCmd = &cobra.Command{
 			client := resty.New()
 			params := url.Values{}
 			params.Add("username", name)
-			params.Add("container_id", containerId)
+			params.Add("container_id", conf.ContainerId)
 
 			resp, err := client.R().
 				SetQueryParamsFromValues(params).
-				Post(serverURL + "/api/user/register")
+				Post(conf.APIBaseURL + "/api/user/register")
 
 			if err != nil {
 				fmt.Printf("注册失败: %v\n", err)

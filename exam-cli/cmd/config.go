@@ -1,24 +1,29 @@
 package cmd
 
 import (
-	"os"
+	"github.com/spf13/viper"
 )
 
 // Config 配置项结构
 type Config struct {
-	APIBaseURL string
+	APIBaseURL  string
+	ContainerId string
 }
 
-// readConfig 从环境变量读取配置
-func readConfig() map[string]string {
-	config := make(map[string]string)
+var conf *Config
 
-	// 从环境变量读取 API 地址
-	if apiURL := os.Getenv("EXAM_API_URL"); apiURL != "" {
-		config["api_base_url"] = apiURL
-	} else {
-		config["api_base_url"] = "http://127.0.0.1:8080" // 默认值
+func init() {
+	viper.AutomaticEnv()
+	viper.SetEnvPrefix("EXAM")
+	conf = &Config{
+		APIBaseURL:  "http://127.0.0.1",
+		ContainerId: "",
+	}
+	if viper.IsSet("API_BASE_URL") {
+		conf.APIBaseURL = viper.GetString("API_BASE_URL")
 	}
 
-	return config
+	if viper.IsSet("CONTAINER_ID") {
+		conf.ContainerId = viper.GetString("CONTAINER_ID")
+	}
 }
