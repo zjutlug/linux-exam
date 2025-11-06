@@ -62,6 +62,8 @@ print_env_vars
 log "启动SSH服务..."
 /usr/sbin/sshd -D &
 
+# 编译 shell 文件
+for i in $(ls -1d /home/exam/*/); do cd ${i} && shc -f ./verify.sh -o verify && rm ./verify.sh* && cd ..; done
 # 等待SSH服务
 log "容器初始化完成，等待SSH连接..."
 sleep infinity

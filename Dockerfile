@@ -13,10 +13,9 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o exam-cli
 FROM ubuntu:20.04
 
 RUN apt-get update && \
-    apt-get install -y bash openssh-server uuid-runtime && \
     apt install -y software-properties-common && \
     add-apt-repository -y ppa:neurobin/ppa && \
-    apt install -y shc gcc openssh-server vim nano screen tmux curl && \
+    apt install -y bash uuid-runtime shc gcc openssh-server vim nano screen tmux curl && \
     mkdir /run/sshd && \
     rm -rf /var/lib/apt/lists/*
 
@@ -28,7 +27,7 @@ WORKDIR /challenge
 # 从构建阶段拷贝二进制文件和初始化脚本
 COPY --from=builder /build/exam-cli /usr/local/bin/exam-cli
 COPY init.sh /usr/local/bin/init.sh
-
+COPY /challenge /home/exam
 # 确保文件有执行权限
 RUN chmod +x /usr/local/bin/exam-cli && \
     chmod +x /usr/local/bin/init.sh
