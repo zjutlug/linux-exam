@@ -24,15 +24,15 @@ func RegisterHandler() gin.HandlerFunc {
 }
 
 type RegisterApi struct {
-	Info     struct{}            `name:"用户注册" desc:"API描述"`
+	Info     struct{}            `name:"用户注册" desc:"用户注册, 提交用户名和容器ID进行注册"`
 	Request  RegisterApiRequest  // API请求参数 (Uri/Header/Query/Body)
 	Response RegisterApiResponse // API响应数据 (Body中的Data部分)
 }
 
 type RegisterApiRequest struct {
-	Query struct {
-		Username    string `form:"username" binding:"required"`
-		ContainerId string `form:"container_id" binding:"required"`
+	Body struct {
+		Username    string `json:"username" binding:"required"`
+		ContainerId string `json:"container_id" binding:"required"`
 	}
 }
 
@@ -42,8 +42,8 @@ type RegisterApiResponse struct{}
 func (r *RegisterApi) Run(ctx *gin.Context) kit.Code {
 	c := ctx.Request.Context()
 	err := ndb.Pick().WithContext(c).Create(&model.User{
-		Username:    r.Request.Query.Username,
-		ContainerID: r.Request.Query.ContainerId,
+		Username:    r.Request.Body.Username,
+		ContainerID: r.Request.Body.ContainerId,
 	}).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrDuplicatedKey) {
@@ -52,12 +52,13 @@ func (r *RegisterApi) Run(ctx *gin.Context) kit.Code {
 		nlog.Pick().WithContext(ctx).Error(err)
 		return comm.CodeUnknownError
 	}
+	nlog.Pick().WithContext(c).Infof("容器[%s]注册成功, 用户名为: %s", r.Request.Body.ContainerId, r.Request.Body.Username)
 	return comm.CodeOK
 }
 
 // Init Api初始化 进行参数校验和绑定
 func (r *RegisterApi) Init(ctx *gin.Context) (err error) {
-	err = ctx.ShouldBindQuery(&r.Request.Query)
+	err = ctx.ShouldBindJSON(&r.Request.Body)
 	if err != nil {
 		return err
 	}

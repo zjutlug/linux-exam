@@ -31,7 +31,7 @@ var verifyCmd = &cobra.Command{
 		var resp response
 		_, err = client.R().
 			SetBody(map[string]interface{}{
-				"container_id": "123123",
+				"container_id": conf.ContainerId,
 				"problem_id":   problemID,
 				"answer":       answer,
 			}).

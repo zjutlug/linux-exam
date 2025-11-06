@@ -1,37 +1,18 @@
 package cmd
 
 import (
+	"exam-cli/comm"
 	"fmt"
 
 	"github.com/go-resty/resty/v2"
 	"github.com/spf13/cobra"
 )
 
-type Response struct {
-	Code    int    `json:"code"`
-	Message string `json:"message"`
-	Data    struct {
-		Username          string `json:"username"`
-		TotalScore        int    `json:"total_score"`
-		LastSubmit        string `json:"last_submit"`
-		CompletedProblems []struct {
-			ID    int    `json:"id"`
-			Score int    `json:"score"`
-			Name  string `json:"name"`
-		} `json:"completed_problems"`
-		AllProblems []struct {
-			ID    int    `json:"id"`
-			Score int    `json:"score"`
-			Name  string `json:"name"`
-		} `json:"all_problems"`
-	} `json:"data"`
-}
-
 var infoCmd = &cobra.Command{
 	Use:   "info",
 	Short: "获取用户信息",
 	Run: func(cmd *cobra.Command, args []string) {
-		var response Response
+		var response comm.InfoResponse
 		client := resty.New()
 		_, err := client.R().
 			SetQueryParam("container_id", conf.ContainerId).

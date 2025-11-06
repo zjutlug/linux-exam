@@ -29,6 +29,8 @@ var (
 
 // 业务错误码 从 30000 开始
 var (
-	CodeWrongAnswer     = kit.NewCode(30000, "答案错误或者题目不存在")
-	CodeSubmitDuplicate = kit.NewCode(30000, "你已提交过此题")
+	CodeWrongAnswer            = kit.NewCode(30000, "答案错误或者题目不存在")
+	CodeProblemNotFound        = kit.NewCode(30001, "题目不存在")
+	CodeSubmitDuplicate        = kit.NewCode(30002, "你已提交过此题")
+	CodeContainerNotRegistered = kit.NewCode(30002, "容器未注册")
 )

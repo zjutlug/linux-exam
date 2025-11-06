@@ -1,6 +1,7 @@
 package user
 
 import (
+	"errors"
 	"reflect"
 	"runtime"
 	"time"
@@ -11,6 +12,7 @@ import (
 	"github.com/zjutjh/mygo/ndb"
 	"github.com/zjutjh/mygo/nlog"
 	"github.com/zjutjh/mygo/swagger"
+	"gorm.io/gorm"
 
 	"app/comm"
 	"app/dao/query"
@@ -55,15 +57,19 @@ func (i *InfoApi) Run(ctx *gin.Context) kit.Code {
 
 	// 获取用户信息
 	user, err := q.User.WithContext(c).Where(q.User.ContainerID.Eq(i.Request.Query.ContainerID)).First()
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		nlog.Pick().WithContext(c).Error("容器%s未注册", i.Request.Query.ContainerID)
+		return comm.CodeContainerNotRegistered
+	}
 	if err != nil {
-		nlog.Pick().WithContext(ctx).Error("获取用户信息失败:", err)
+		nlog.Pick().WithContext(c).Error("获取用户信息失败:", err)
 		return comm.CodeDatabaseError
 	}
 
 	// 获取用户的所有提交记录
 	submissions, err := q.Submission.WithContext(c).Where(q.Submission.ContainerID.Eq(i.Request.Query.ContainerID)).Find()
 	if err != nil {
-		nlog.Pick().WithContext(ctx).Error("获取提交记录失败:", err)
+		nlog.Pick().WithContext(c).Error("获取提交记录失败:", err)
 		return comm.CodeDatabaseError
 	}
 
