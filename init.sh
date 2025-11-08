@@ -64,6 +64,11 @@ log "启动SSH服务..."
 
 # 编译 shell 文件
 for i in $(ls -1d /home/exam/*/); do cd ${i} && shc -f ./verify.sh -o verify && rm ./verify.sh* && cd ..; done
+
+# 生成题目
+find . -type f -name "generator.py" -exec sh -c 'cd "$(dirname "{}")" && pwd && python3 generator.py' \;
+rm */generator.py
+
 # 等待SSH服务
 log "容器初始化完成，等待SSH连接..."
 sleep infinity
