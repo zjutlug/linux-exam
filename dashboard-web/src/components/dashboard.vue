@@ -82,10 +82,10 @@ function renderChart() {
   if (!chartInstance || players.value.length === 0) return;
   const sorted = [...players.value].sort((a, b) => b.score - a.score);
   // 备用颜色（用于第4名及以后，比较素雅）
-  const mutedColor = "#9aa6b2";
+  const mutedColor = "#DCDCDC";
   // 其他非奖牌位使用统一的素色
   // 更鲜艳的金/银/铜色
-  const podiumColors = ["#ffb300", "#bdbdbd", "#cd7f32"]; // 🥇 🥈 🥉
+  const podiumColors = ["#ffb300", "#9aa6b2", "#cd7f32"]; // 🥇 🥈 🥉
   const medalIcons = ["🥇", "🥈", "🥉"];
 
   // 固定每条 bar 的高度（px），容器高度根据条目数增长
@@ -99,8 +99,11 @@ function renderChart() {
 
   const option: echarts.EChartsOption = {
     backgroundColor: "transparent",
+    // 初始与更新动画设置
+    animationDuration: 600,
+    animationEasing: 'cubicOut',
     animationDurationUpdate: 800,
-    animationEasingUpdate: 'cubicOut' as any,
+    animationEasingUpdate: 'cubicOut',
     grid: { left: "10%", right: "10%", top: 40, bottom: 30 },
     xAxis: {
       type: "value",
@@ -175,9 +178,15 @@ function renderChart() {
     ],
   };
 
-  chartInstance.setOption(option as any);
-  // 触发 resize 使 ECharts 重新布局
-  if (chartInstance) chartInstance.resize();
+  // 等待浏览器应用高度变更后再 resize，确保 canvas 尺寸正确
+  if (chart.value && chartInstance) {
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      chartInstance!.resize();
+      chartInstance!.setOption(option as any, { notMerge: false, lazyUpdate: false });
+    }));
+  } else if (chartInstance) {
+    chartInstance.setOption(option as any, { notMerge: false, lazyUpdate: false });
+  }
 }
 
 onMounted(() => {
@@ -321,7 +330,7 @@ onBeforeUnmount(() => {
 .chart {
   width: 100%;
   flex: 1 1 auto;
-  min-height: 420px; /* 更稳定的视觉高度 */
+  min-height: 420px;
 }
 
 @media (max-width: 720px) {
