@@ -3,6 +3,7 @@ package comm
 import "github.com/zjutjh/mygo/kit"
 
 var CodeOK = kit.NewCode(0, "成功")
+var CodeCorrectAnswer = kit.NewCode(0, "答案正确")
 
 // 系统错误码
 var (
@@ -29,7 +30,7 @@ var (
 
 // 业务错误码 从 30000 开始
 var (
-	CodeWrongAnswer            = kit.NewCode(30000, "答案错误或者题目不存在")
+	CodeWrongAnswer            = kit.NewCode(30000, "答案错误")
 	CodeProblemNotFound        = kit.NewCode(30001, "题目不存在")
 	CodeSubmitDuplicate        = kit.NewCode(30002, "你已提交过此题")
 	CodeContainerNotRegistered = kit.NewCode(30002, "容器未注册")

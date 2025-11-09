@@ -78,8 +78,10 @@ func hfRegister(ctx *gin.Context) {
 	if !ctx.IsAborted() {
 		if code == comm.CodeOK {
 			ctx.String(200, "ok")
+		} else if code == comm.CodeUserExist {
+			ctx.String(400, "用户已存在")
 		} else {
-			ctx.String(400, "登录失败")
+			ctx.String(400, "未知异常")
 		}
 	}
 }

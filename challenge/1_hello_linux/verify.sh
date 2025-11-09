@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cat <<'EOF' | pv -qL 20
+cat <<'EOF' 
 恭喜你已成功使用ssh工具连接Linux服务器!
 
 本题的flag为: flag{hello_linux}

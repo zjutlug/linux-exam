@@ -50,21 +50,24 @@ var loginCmd = &cobra.Command{
 				fmt.Println("用户名只能包含字母数字、下划线或短横线。")
 				continue
 			}
-
+			if len(name) > 20 {
+				fmt.Println("用户名过长")
+				continue
+			}
 			// 向服务器发送注册请求
 			client := resty.New()
 			params := url.Values{}
 			params.Add("username", name)
 			params.Add("container_id", conf.Pick().ContainerId)
-			_, err = client.R().
+			resp, err := client.R().
 				SetBody(map[string]interface{}{
 					"username":     name,
 					"container_id": conf.Pick().ContainerId,
 				}).
 				Post(conf.Pick().APIBaseURL + "/api/user/register")
-
-			if err != nil {
-				fmt.Printf("注册失败: %v\n", err)
+			msg := string(resp.Body())
+			if err != nil || msg != "ok" {
+				fmt.Printf("注册失败:%s, 请重试\n", msg)
 				continue
 			}
 			break

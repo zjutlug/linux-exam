@@ -50,7 +50,13 @@ func (v *VerifyApi) Run(ctx *gin.Context) kit.Code {
 	answer := v.Request.Body.Answer
 
 	for _, p := range comm.BizConf.Problems {
-		if p.Id == problemId && p.Answer == answer {
+		if p.Id == problemId {
+			// 答案错误
+			if p.Answer != answer {
+				v.Response.Correct = false
+				return comm.CodeWrongAnswer
+			}
+			// 答案正确
 			v.Response.Correct = true
 			// 加分
 			err := ndb.Pick().WithContext(c).Create(&model.Submission{
@@ -63,10 +69,10 @@ func (v *VerifyApi) Run(ctx *gin.Context) kit.Code {
 			if err != nil {
 				return kit.CodeDatabaseError
 			}
-			return comm.CodeOK
+			return comm.CodeCorrectAnswer
 		}
 	}
-	return comm.CodeWrongAnswer
+	return comm.CodeProblemNotFound
 }
 
 // Init Api初始化 进行参数校验和绑定

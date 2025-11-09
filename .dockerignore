@@ -286,3 +286,4 @@ Temporary Items
 # End of https://www.toptal.com/developers/gitignore/api/macos
 
 /**/solve.sh
+/**/.DS_Store

@@ -14,8 +14,8 @@ type response struct {
 	Msg  string `json:"message"`
 }
 
-var verifyCmd = &cobra.Command{
-	Use:   "verify <container_id> <problem>",
+var submitCmd = &cobra.Command{
+	Use:   "submit <container_id> <problem>",
 	Short: "答案校验",
 	Args:  cobra.ExactArgs(2), // 限定必须有两个参数
 	Run: func(cmd *cobra.Command, args []string) {
@@ -48,5 +48,5 @@ var verifyCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(verifyCmd)
+	rootCmd.AddCommand(submitCmd)
 }
